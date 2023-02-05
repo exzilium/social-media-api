@@ -2,8 +2,6 @@ const { User } = require("../models");
 
 // module exports of object containing "namedFunction(req, res) { Model.method().then.catch" for use in userRoutes
 module.exports = {
-  // /api/users
-
   // Get all Users
   getUsers(req, res) {
     User.find()
@@ -66,24 +64,31 @@ module.exports = {
       .then(() => res.json({ message: "User and associated data deleted" }))
       .catch((err) => res.status(500).json(err));
   },
-  // /api/users/:userId/friends/:friendId
-  // Post to add new friend to User's friend list
-  
+  // Put to add new friend to User's friend list array
+  addUserFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $push: { friends: req.params.friendId } }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: "No user with this ID" })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  // Delete friend from User's friend list array
+  deleteUserFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: "No user with this ID" })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
   // end of exports
 };
-
-/*
-/api/users
-- [ ] get all users
-- [ ] get a single user by _id with thought and friend data
-- [ ] post a new user (example code in instructions)
-- [ ] put update to user by _id
-- [ ] delete user by _id
-    - [ ] remove a user’s associated thoughts when deleted)
-*/
-
-/*
-/api/users/:userId/friends/:friendId
-- [ ] post to add new friend to user’s friend list
-- [ ] delete to remove a friend from user’s friend list
-*/
