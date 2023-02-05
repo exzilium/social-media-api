@@ -8,9 +8,9 @@ const reactionSchema = new Schema({
   },
   reactionBody: { type: String, required: true, maxLength: 280 },
   username: { type: String, required: true },
-  timestamps: {
-    createdAt: true,
-    updatedAt: false,
+  created_at: {
+    type: Date,
+    default: Date.now,
     get: (date) => {
       return date.toLocaleString();
     },
@@ -21,7 +21,13 @@ const reactionSchema = new Schema({
 const thoughtSchema = new Schema(
   {
     thoughtText: { type: String, required: true, minLength: 1, maxLength: 280 },
-    timestamps: { createdAt: true, updatedAt: false },
+    created_at: {
+      type: Date,
+      default: Date.now,
+      get: (date) => {
+        return date.toLocaleString();
+      },
+    },
     username: { type: String, required: true }, // reference to user model?
     reactions: [reactionSchema],
   },
