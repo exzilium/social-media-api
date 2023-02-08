@@ -77,11 +77,20 @@ module.exports = {
           : res.json(thought)
       )
       .catch((err) => res.status(500).json(err));
-    // create a reaction const to update thought? Data is already stored in req tho...
-    // req includes: thoughtId, reactionBody (text), username
-    // findOneAndUpdate thought
-    // then, take reaction, find thought array of thought _id, update thought array with addtoset/push of reaction _id
-    // catch errors
+  },
+  deleteReaction(req, res) {
+    console.log(req.body.reactionId);
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { reactionId: req.body.reactionId } } },
+      { runValidators: true, new: true }
+    )
+      .then((thought) =>
+        !thought
+          ? res.status(404).json({ message: "No thought with this ID" })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
   },
   // end of exports
 };
