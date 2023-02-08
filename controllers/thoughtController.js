@@ -94,9 +94,3 @@ module.exports = {
   },
   // end of exports
 };
-
-/*
-/api/thoughts/:thoughtId/reactions
-- [ ] post to create a reaction stored in a single thought’s reactions array field
-- [ ] delete to pull and remove a reaction by reactionId value 
-*/
