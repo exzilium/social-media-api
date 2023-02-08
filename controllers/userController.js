@@ -5,15 +5,8 @@ module.exports = {
   // Get all Users
   getUsers(req, res) {
     User.find()
-      .then(async (users) => {
-        const userObj = {
-          users,
-        };
-        return res.json(userObj);
-      })
-      .catch((err) => {
-        return res.status(500).json(err);
-      });
+      .then((users) => res.json(users))
+      .catch((err) => res.status(500).json(err));
   },
   // Get a single user by _id with thought and friend data
   getSingleUser(req, res) {
@@ -66,7 +59,7 @@ module.exports = {
   addUserFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $push: { friends: req.params.friendId } },
+      { $addToSet: { friends: req.params.friendId } },
       { runValidators: true, new: true }
     )
       .then((user) =>
