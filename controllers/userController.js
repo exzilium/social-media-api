@@ -11,6 +11,8 @@ module.exports = {
   // Get a single user by _id with thought and friend data
   getSingleUser(req, res) {
     User.findOne({ _id: req.params.userId })
+      .populate({ path: "thoughts", select: "-__v" })
+      .populate({ path: "friends", select: "-__v" })
       .select("-__v")
       .then(async (user) =>
         !user
@@ -20,7 +22,6 @@ module.exports = {
             })
       )
       .catch((err) => {
-        console.log(err);
         return res.status(500).json(err);
       });
   },

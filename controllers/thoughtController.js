@@ -19,7 +19,6 @@ module.exports = {
             })
       )
       .catch((err) => {
-        console.log(err);
         return res.status(500).json(err);
       });
   },
@@ -30,8 +29,6 @@ module.exports = {
       // then, pass in new thought, find user and update thought array and res with new thought
       .then((thought) => {
         // find and update user thought's array
-        console.log(req.body.userId);
-        console.log(thought._id);
         User.findOneAndUpdate(
           // find the user by the userId in the req
           { _id: req.body.userId },
@@ -58,11 +55,22 @@ module.exports = {
   },
   deleteThought(req, res) {
     Thought.findOneAndDelete({ _id: req.params.thoughtId })
-      .then((thought) => {
+      .then((thought) =>
         !thought
           ? res.status(404).json({ message: "No thought with this ID" })
-          : res.json({ message: "Thought deleted" });
-      })
+          : User.findOneAndUpdate(
+              { thoughts: req.params.thoughtId },
+              { $pull: { thoughts: req.params.thoughtId } },
+              { new: true }
+            )
+      )
+      .then((user) =>
+        !user
+          ? res
+              .status(404)
+              .json({ message: "Thought deleted but no user with this ID" })
+          : res.json({ message: "Thought successfully deleted" })
+      )
       .catch((err) => res.status(500).json(err));
   },
   createReaction(req, res) {
@@ -79,7 +87,6 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
   deleteReaction(req, res) {
-    console.log(req.body.reactionId);
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
       { $pull: { reactions: { reactionId: req.body.reactionId } } },
