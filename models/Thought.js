@@ -33,7 +33,7 @@ const thoughtSchema = new Schema(
         return date.toLocaleString();
       },
     },
-    username: { type: String, required: true }, // reference to user model?
+    username: { type: String, required: true },
     reactions: [reactionSchema],
   },
   {
